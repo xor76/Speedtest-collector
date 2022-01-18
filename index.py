@@ -28,7 +28,7 @@ def storeSpeedTestResultDB(speedTestResultJson, dbTable):
 
 def handler(event, context):
     
-    storeSpeedTestResultDB(event, TABLE_NAME)
+#    storeSpeedTestResultDB(event, TABLE_NAME)
     
     return {'statusCode': 200,
             'body': json.dumps(event),
