@@ -34,6 +34,12 @@ Resources:
         Fn::GetAtt:
         - LambdaExecutionRole
         - Arn
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref DynamoDBTable
+      Policies:
+        - DynamoDBCrudPolicy:
+          TableName: !Ref DynamoDBTable
       Events:
         GetEvent:
           Type: Api
@@ -54,9 +60,31 @@ Resources:
         Statement:
         - Effect: Allow
           Principal:
-            Service: [lambda.amazonaws.com]
+            Service: 
+            - lambda.amazonaws.com
           Action: sts:AssumeRole
       Path: /
       ManagedPolicyArns:
         - !Sub 'arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
       PermissionsBoundary: !Sub 'arn:${AWS::Partition}:iam::${AWS::AccountId}:policy/CodeStar_${ProjectId}_PermissionsBoundary'
+
+  DynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        -
+          AttributeName: ResultId
+          AttributeType: S
+        -
+          AttributeName: TimeStamp
+          AttributeType: N
+      KeySchema:
+        -
+          AttributeName: ResultId
+          KeyType: HASH
+        -
+          AttributeName: TimeStamp
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
