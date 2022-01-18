@@ -10,7 +10,7 @@ def storeSpeedTestResultDB(speedTestResultJson, dbTable):
         timestamp_p = dp.parse(speedTestResultJson['timestamp'])
         response = dynamo.put_item(TableName=dbTable,
                                Item={
-                                   'ResultID': {"S": str(speedTestResultJson['result']['id'])},
+                                   'ResultId': {"S": str(speedTestResultJson['result']['id'])},
                                    'DownloadSpeed': {"N": str(speedTestResultJson['download']['bytes'])},
                                    'TimeStamp': {"N": str(timestamp_p.timestamp())},
                                    'UploadSpeed': {"N": str(speedTestResultJson['upload']['bytes'])},
