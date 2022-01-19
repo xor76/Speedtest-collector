@@ -1,14 +1,10 @@
-import json
 import os
 import boto3
 import dateutil.parser as dp
 
-TABLE_NAME = os.getenv('TABLE_NAME')
-dynamo = boto3.client('dynamodb')
-
-def storeSpeedTestResultDB(speedTestResultJson, dbTable):
+def storeSpeedTestResultDB(speedTestResultJson, dydbClient, dbTable):
         timestamp_p = dp.parse(speedTestResultJson['timestamp'])
-        response = dynamo.put_item(TableName=dbTable,
+        response = dydbClient.put_item(TableName=dbTable,
                                Item={
                                    'ResultId': {"S": str(speedTestResultJson['result']['id'])},
                                    'DownloadSpeed': {"N": str(speedTestResultJson['download']['bytes'])},
@@ -25,15 +21,22 @@ def storeSpeedTestResultDB(speedTestResultJson, dbTable):
                                    'ServerID': {"N": str(speedTestResultJson['server']['id'])},
                                }
                             )
+        return response
 
 def handler(event, context):
     
-#    storeSpeedTestResultDB(event, TABLE_NAME)
+    try:
+        TABLE_NAME = os.getenv('TABLE_NAME')
+        dynamo = boto3.client('dynamodb')
+        res = storeSpeedTestResultDB(event['body'], dynamo, TABLE_NAME)
+        print(res)
 
-    print("event start"+'-'*20)
-    print(event)
-    print("event end"+'-'*20)
+    except Exception as e:
+        return {'statusCode': 502,
+                'body': str(e)
+        }
+
     return {'statusCode': 200,
-            'body': json.dumps(event),
+            'body': { "message": "Result inserted correctly in db table" },
             'headers': {'Content-Type': 'application/json'}
-            }
+    }
