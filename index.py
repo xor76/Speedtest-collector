@@ -4,8 +4,12 @@ import dateutil.parser as dp
 import traceback
 
 def storeSpeedTestResultDB(speedTestResultJson, dydbClient, dbTable):
-        timestamp_p = dp.parse(speedTestResultJson['timestamp'])
-        response = dydbClient.put_item(TableName=dbTable,
+    print("1nside store func"+'-'*20)
+    print(speedTestResultJson)
+    print(speedTestResultJson['timestamp'])
+    print("2nside store func"+'-'*20)
+    timestamp_p = dp.parse(speedTestResultJson['timestamp'])
+    response = dydbClient.put_item(TableName=dbTable,
                                Item={
                                    'ResultId': {"S": str(speedTestResultJson['result']['id'])},
                                    'DownloadSpeed': {"N": str(speedTestResultJson['download']['bytes'])},
@@ -22,7 +26,7 @@ def storeSpeedTestResultDB(speedTestResultJson, dydbClient, dbTable):
                                    'ServerID': {"N": str(speedTestResultJson['server']['id'])},
                                }
                             )
-        return response
+    return response
 
 def handler(event, context):
     
