@@ -29,7 +29,10 @@ def storeSpeedTestResultDB(speedTestResultJson, dbTable):
 def handler(event, context):
     
 #    storeSpeedTestResultDB(event, TABLE_NAME)
-    
+
+    print("event start"+'-'*20)
+    print(event)
+    print("event end"+'-'*20)
     return {'statusCode': 200,
             'body': json.dumps(event),
             'headers': {'Content-Type': 'application/json'}
