@@ -1,6 +1,7 @@
 import os
 import boto3
 import traceback
+import json
 
 def storeSpeedTestResultDB(speedTestResultJson, dydbClient, dbTable):
     print("1nside store func"+'-'*20)
@@ -15,7 +16,8 @@ def handler(event, context):
     try:
         TABLE_NAME = os.getenv('TABLE_NAME')
         dynamo = boto3.client('dynamodb')
-        res = storeSpeedTestResultDB(event['body'], dynamo, TABLE_NAME)
+        jsonItem = json.loads(event['body'])
+        res = storeSpeedTestResultDB(jsonItem, dynamo, TABLE_NAME)
 
     except Exception as e:
         return {'statusCode': 502,
