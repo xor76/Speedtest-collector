@@ -28,8 +28,8 @@ def handler(event, context):
     try:
         TABLE_NAME = os.getenv('TABLE_NAME')
         dynamo = boto3.client('dynamodb')
+        print(event)
         res = storeSpeedTestResultDB(event['body'], dynamo, TABLE_NAME)
-        print(res)
 
     except Exception as e:
         return {'statusCode': 502,
