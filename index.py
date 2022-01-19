@@ -26,6 +26,6 @@ def handler(event, context):
         }
 
     return {'statusCode': 200,
-            'body': { "message": "Result inserted correctly in db table" },
+            'body': 'Result inserted correctly in db table',
             'headers': {'Content-Type': 'application/json'}
     }
