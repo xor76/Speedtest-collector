@@ -1,6 +1,7 @@
 import os
 import boto3
 import dateutil.parser as dp
+import traceback
 
 def storeSpeedTestResultDB(speedTestResultJson, dydbClient, dbTable):
         timestamp_p = dp.parse(speedTestResultJson['timestamp'])
@@ -28,12 +29,12 @@ def handler(event, context):
     try:
         TABLE_NAME = os.getenv('TABLE_NAME')
         dynamo = boto3.client('dynamodb')
-        print(event)
         res = storeSpeedTestResultDB(event['body'], dynamo, TABLE_NAME)
 
     except Exception as e:
         return {'statusCode': 502,
-                'body': str(e)
+                'exception': str(e),
+                'traceback': traceback.format_exc()
         }
 
     return {'statusCode': 200,
