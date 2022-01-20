@@ -4,8 +4,6 @@ import traceback
 import json
 
 def storeSpeedTestResultDB(speedTestResultJson, dydbClient, dbTable):
-    print("1nside store func"+'-'*20)
-    print(speedTestResultJson)
     response = dydbClient.put_item(TableName=dbTable,
                                Item=speedTestResultJson
                             )
@@ -21,8 +19,8 @@ def handler(event, context):
 
     except Exception as e:
         return {'statusCode': 502,
-                'exception': str(e),
-                'traceback': traceback.format_exc()
+                'body': 'Exception: ' + str(e) + ' Traceback: ' + traceback.format_exc(),
+                'headers': {'Content-Type': 'application/json'}
         }
 
     return {'statusCode': 200,
