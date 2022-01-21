@@ -48,6 +48,31 @@ Resources:
             Method: post
             Auth:
               ApiKeyRequired: true
+
+  QueryST:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub 'awscodestar-${ProjectId}-lambda-QueryST'
+      Handler: query.handler
+      Runtime: python3.7
+      Role:
+        Fn::GetAtt:
+        - LambdaExecutionRole
+        - Arn
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref DynamoDBTable
+      Policies:
+        - DynamoDBCrudPolicy:
+          TableName: !Ref DynamoDBTable
+      Events:
+        PostEvent:
+          Type: Api
+          Properties:
+            Path: /
+            Method: get
+            Auth:
+              ApiKeyRequired: true
   LambdaExecutionRole:
     Description: Creating service role in IAM for AWS Lambda
     Type: AWS::IAM::Role
