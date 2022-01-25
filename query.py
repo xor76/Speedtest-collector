@@ -15,10 +15,10 @@ def handler(event, context):
         TABLE_NAME = os.getenv('TABLE_NAME')
         dynamo = boto3.resource('dynamodb')
         res = query_SpeedTestResults(dynamo, TABLE_NAME)
-        body_str = ''
+        body_str = '{'
         for i in res[-24:]:
-            body_str += '{t:' +str(i['TimeStamp'])+ ', dw: ' + str(i['DownloadSpeed']) + ', up: ' + str(i['UploadSpeed']) + '},'
-        
+            body_str += '{"t":' +str(i['TimeStamp'])+ ', "dw": ' + str(i['DownloadSpeed']) + ', "up": ' + str(i['UploadSpeed']) + '},'
+        body_str = body_str[:-1] + '}'
     except Exception as e:
         return {'statusCode': 502,
                 'body': 'Exception: ' + str(e) + '\nTraceback: ' + traceback.format_exc(),
@@ -26,6 +26,6 @@ def handler(event, context):
         }
 
     return {'statusCode': 200,
-            'body': body_str[:-1],
+            'body': body_str,
             'headers': {'Content-Type': 'application/json'}
     }
