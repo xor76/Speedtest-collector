@@ -14,7 +14,8 @@ def handler(event, context):
     try:
         TABLE_NAME = os.getenv('TABLE_NAME')
         dynamo = boto3.resource('dynamodb')
-        res = query_SpeedTestResults(dynamo, TABLE_NAME)
+        resUnsorted = query_SpeedTestResults(dynamo, TABLE_NAME)
+        res = sorted(resUnsorted,key=lambda d: d['TimeStamp'])
         body_str = '['
         for i in res[-24:]:
             body_str += '{"t":' +str(i['TimeStamp'])+ ', "dw": ' + str(i['DownloadSpeed']) + ', "up": ' + str(i['UploadSpeed']) + '},'
